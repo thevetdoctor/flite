@@ -1,4 +1,4 @@
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, generics
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .models import User, NewUserPhoneVerification
@@ -7,15 +7,27 @@ from .serializers import CreateUserSerializer, UserSerializer, SendNewPhonenumbe
 from rest_framework.views import APIView
 from . import utils
 
-class UserViewSet(mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  viewsets.GenericViewSet):
+# class UserViewSet(mixins.RetrieveModelMixin,
+#                   mixins.UpdateModelMixin,
+#                   viewsets.GenericViewSet,
+#                   generics.GenericAPIView):
+class UserViewSet(viewsets.ModelViewSet):
     """
     Updates and retrieves user accounts
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsUserOrReadOnly,)
+
+    
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+        
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 class UserCreateViewSet(mixins.CreateModelMixin,
@@ -28,7 +40,7 @@ class UserCreateViewSet(mixins.CreateModelMixin,
     permission_classes = (AllowAny,)
 
 
-class SendNewPhonenumberVerifyViewSet(mixins.CreateModelMixin,mixins.UpdateModelMixin, viewsets.GenericViewSet):
+class SendNewPhonenumberVerifyViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """
     Sending of verification code
     """

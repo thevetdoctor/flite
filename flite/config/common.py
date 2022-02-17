@@ -29,7 +29,7 @@ class Common(Configuration):
 
         # Your apps
         'flite.users',
-        'flite.core',
+        # 'flite.core',
 
     )
 
